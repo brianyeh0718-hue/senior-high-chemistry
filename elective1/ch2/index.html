@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>選修化學 I 第二章 氣體</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06142b; --panel:#0b2147; --panel2:#0f2c5c; --line:rgba(120,190,255,.18);
+  --ink:#e8f1ff; --mute:#9fb6d9; --cyan:#36e0ff; --yellow:#ffd84d; --pink:#ff7aa8;
+  --orange:#ff9f43; --green:#3ee08f; --red:#ff5a5a; --radius:16px;
+  --tools-w:300px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--ink); background-color:var(--bg);
+  background-image:
+    linear-gradient(rgba(80,150,255,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(80,150,255,.07) 1px,transparent 1px);
+  background-size:32px 32px;
+  font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; line-height:1.6;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+input{font:inherit}
+
+/* ---------- Hero & nav ---------- */
+.hero{position:relative;min-height:340px;display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero::before{content:"";position:absolute;inset:0;background:url(assets/slides/slide01.jpg) center 18%/cover;opacity:.45;-webkit-mask-image:linear-gradient(180deg,#000 45%,transparent 75%);mask-image:linear-gradient(180deg,#000 45%,transparent 75%)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,20,43,.1),rgba(6,20,43,.95))}
+.hero-in{position:relative;z-index:1;padding:40px 24px 28px;max-width:1200px;width:100%;margin:0 auto}
+.kicker{color:var(--cyan);font-weight:700;letter-spacing:.12em;font-size:14px}
+.hero h1{margin:6px 0 4px;font-size:clamp(32px,5vw,56px);font-weight:900;letter-spacing:.04em;text-shadow:0 0 24px rgba(54,224,255,.35)}
+.hero p{margin:0;color:var(--mute);font-size:17px}
+nav.top{position:sticky;top:0;z-index:50;background:rgba(6,20,43,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.top .in{max-width:1200px;margin:0 auto;padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap}
+nav.top a{color:var(--ink);text-decoration:none;padding:6px 14px;border-radius:999px;border:1px solid var(--line);font-size:15px;background:var(--panel)}
+nav.top a:hover,nav.top a.on{border-color:var(--cyan);color:var(--cyan)}
+nav.top a b{color:var(--yellow);margin-right:6px}
+@media(max-width:700px){nav.top .in{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:8px 16px}nav.top .in::-webkit-scrollbar{display:none}nav.top a{white-space:nowrap}main{padding:8px 16px 80px}}
+
+main{max-width:1200px;margin:0 auto;padding:8px 24px 80px}
+@media(min-width:1180px){
+  body.tools-open main, body.tools-open nav.top .in, body.tools-open .hero-in{
+    margin-left:max(24px,calc((100vw - 1200px - var(--tools-w) - 40px)/2));
+    margin-right:calc(var(--tools-w) + 40px);
+  }
+}
+
+/* ---------- Units ---------- */
+.unit{scroll-margin-top:64px;padding:36px 0 12px;border-bottom:1px dashed var(--line)}
+.unit-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:18px}
+.tag{flex:none;font-weight:900;font-size:22px;color:#06142b;background:var(--yellow);border-radius:12px;padding:6px 12px;box-shadow:0 0 18px rgba(255,216,77,.35)}
+.unit-head h2{margin:0;font-size:clamp(24px,3vw,32px);line-height:1.25}
+.unit-head ul{margin:6px 0 0;padding-left:20px;color:var(--mute)}
+.unit-head li{margin:2px 0}
+.grid-a{display:grid;grid-template-columns:3fr 1fr;gap:18px;align-items:start}
+.grid-b{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-top:18px;align-items:start}
+@media(max-width:900px){.grid-a,.grid-b{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card h3{margin:0 0 10px;font-size:16px;color:var(--cyan);display:flex;align-items:center;gap:8px;letter-spacing:.05em}
+.card h3 .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--cyan);color:#06142b;font-size:13px;font-weight:900}
+
+/* ---------- Carousel ---------- */
+.carousel{outline:none}
+.car-stage{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;touch-action:pan-y}
+.car-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .45s;user-select:none;-webkit-user-drag:none}
+.car-stage img.on{opacity:1}
+.car-btn{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border:none;border-radius:10px;background:rgba(6,20,43,.6);font-size:34px;line-height:1;opacity:.75}
+.car-btn:hover{opacity:1;background:rgba(54,224,255,.35)}
+.car-btn.prev{left:8px}.car-btn.next{right:8px}
+.car-fs{position:absolute;top:8px;right:8px;border:none;border-radius:8px;background:rgba(6,20,43,.6);padding:4px 10px;font-size:18px}
+.car-stage:fullscreen{border-radius:0}
+.car-bar{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.dots{display:flex;gap:6px}
+.dot{width:12px;height:12px;border-radius:50%;border:none;background:rgba(159,182,217,.35);padding:0}
+.dot.on{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.count{color:var(--mute);font-size:14px}
+
+/* ---------- Infographic crop ---------- */
+.info-crop{width:100%;border-radius:12px;background-repeat:no-repeat;cursor:zoom-in;border:1px solid var(--line);background-color:#f6f3ec;transition:transform .2s}
+.info-crop:hover{transform:scale(1.02)}
+.cap{color:var(--mute);font-size:13px;margin-top:6px;text-align:center}
+
+/* ---------- Interactive ---------- */
+.viz svg{width:100%;height:auto;display:block;background:rgba(3,12,28,.55);border-radius:12px;border:1px solid var(--line);touch-action:none}
+.viz .lbl{fill:var(--ink);font-size:15px;font-weight:700;paint-order:stroke;stroke:#06142b;stroke-width:4px}
+.viz .sm{font-size:13px;font-weight:500}
+.handle{cursor:grab;fill:#fff;stroke:var(--cyan);stroke-width:3}
+.handle:hover{fill:var(--cyan)}
+.readout{margin-top:10px;background:rgba(3,12,28,.55);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:16px}
+.readout .big{font-size:20px;font-weight:700}
+.y{color:var(--yellow)}.c{color:var(--cyan)}.p{color:var(--pink)}.o{color:var(--orange)}.g{color:var(--green)}.r{color:var(--red)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.seg button,.btn{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 14px;font-size:14px}
+.seg button.on,.btn.pri{background:var(--cyan);color:#06142b;border-color:var(--cyan);font-weight:700}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.ctrl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:10px;font-size:15px}
+.ctrl input[type=range]{accent-color:var(--cyan);width:150px;vertical-align:middle}
+.hint{color:var(--mute);font-size:13px;margin:6px 0 0}
+
+/* ---------- Quiz ---------- */
+.q{padding:10px 0;border-bottom:1px dashed var(--line)}
+.qt{margin:0 0 8px;font-size:16px}
+.qt b{color:var(--yellow);margin-right:4px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.opt{text-align:left;border:1px solid var(--line);background:rgba(3,12,28,.5);border-radius:10px;padding:7px 10px;font-size:15px;display:flex;gap:8px;align-items:center}
+.opt span{display:inline-grid;place-items:center;flex:none;width:22px;height:22px;border-radius:6px;background:var(--panel2);font-size:12px;font-weight:700}
+.opt:hover{border-color:var(--cyan)}
+.answered .opt{cursor:default}
+.opt.right{border-color:var(--green);background:rgba(62,224,143,.18)}
+.opt.wrong{border-color:var(--red);background:rgba(255,90,90,.18)}
+.exp{margin:6px 0 0;font-size:14px;display:none}
+.exp.ok{display:block;color:var(--green)}.exp.no{display:block;color:#ffb3b3}
+.q-foot{display:flex;justify-content:space-between;align-items:center;padding-top:10px}
+.score{font-weight:700;color:var(--yellow)}
+
+/* ---------- YouTube ---------- */
+.yt-form{display:grid;grid-template-columns:2fr 1fr auto;gap:8px}
+@media(max-width:700px){.yt-form{grid-template-columns:1fr}}
+.yt-form input{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#06142b;color:var(--ink);min-width:0}
+.yt-form input:focus{outline:2px solid var(--cyan);border-color:transparent}
+.yt-msg{margin:6px 0;min-height:1.2em;font-size:14px;color:#ffb3b3}
+.yt-msg.ok{color:var(--green)}
+.yt-player{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.yt-player iframe{width:100%;height:100%;border:0;display:block}
+.yt-empty{height:100%;display:grid;place-content:center;text-align:center;color:var(--mute);font-size:20px}
+.yt-empty span{font-size:14px}
+.yt-bar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.yt-bar a{color:var(--cyan);font-size:14px}
+.yt-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:12px}
+.yt-item{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:rgba(3,12,28,.5);cursor:pointer;text-align:left;padding:0}
+.yt-item.on{border-color:var(--cyan);box-shadow:0 0 0 2px var(--cyan)}
+.yt-item img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#000}
+.yt-item .t{display:block;padding:6px 8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yt-del{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(6,20,43,.85);font-size:14px;line-height:1}
+.yt-del:hover{background:var(--red)}
+
+/* ---------- Review ---------- */
+.review-grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start}
+@media(max-width:900px){.review-grid{grid-template-columns:1fr}}
+.full-info{width:100%;border-radius:12px;cursor:zoom-in;display:block}
+video{width:100%;border-radius:12px;background:#000;display:block}
+
+/* ---------- Lightbox / big overlay ---------- */
+.overlay{position:fixed;inset:0;z-index:2000;background:rgba(2,8,20,.88);display:none;place-items:center;padding:20px}
+.overlay.on{display:grid}
+.overlay img{max-width:96vw;max-height:94vh;border-radius:10px}
+#bigShow .bignum{font-size:min(38vw,60vh);font-weight:900;line-height:1;color:var(--yellow);text-shadow:0 0 60px rgba(255,216,77,.5);font-variant-numeric:tabular-nums}
+#bigShow .bigsub{text-align:center;color:var(--mute);font-size:22px;margin-top:10px}
+#bigShow.alarm .bignum{color:var(--red);animation:blink .5s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+
+/* ---------- Tools panel ---------- */
+.tools{position:fixed;right:20px;top:50%;transform:translateY(-50%);width:var(--tools-w);z-index:1000;background:rgba(11,33,71,.97);border:1px solid rgba(54,224,255,.45);border-radius:18px;box-shadow:0 16px 50px rgba(0,0,0,.5);overflow:hidden}
+.tools-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:linear-gradient(90deg,#123a78,#0e2d5f);cursor:move;user-select:none;font-weight:700}
+.tools-head button{border:none;background:rgba(255,255,255,.12);border-radius:8px;width:30px;height:28px}
+.tools.min .tools-body{display:none}
+.tools.min{width:auto}
+.tools-body{padding:12px 14px 14px}
+.tool-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.tool-tabs button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:7px 0;font-size:15px}
+.tool-tabs button.on{background:var(--cyan);color:#06142b;font-weight:700;border-color:var(--cyan)}
+.tool-pane{display:none}.tool-pane.on{display:block}
+.trow{display:flex;gap:6px;align-items:center;margin:8px 0;flex-wrap:wrap}
+.trow input[type=number]{width:70px;padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:#06142b;color:var(--ink)}
+.tbtn{flex:1;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:7px 4px;font-size:14px}
+.tbtn.on{border-color:var(--cyan);color:var(--cyan)}
+.tbig{width:100%;border:none;border-radius:12px;padding:10px;font-size:17px;font-weight:900;background:linear-gradient(90deg,var(--yellow),#ffb84d);color:#06142b;margin:6px 0}
+.tbig.stop{background:linear-gradient(90deg,var(--pink),var(--red));color:#fff}
+.lot-num{text-align:center;font-size:72px;font-weight:900;color:var(--yellow);line-height:1.1;font-variant-numeric:tabular-nums;min-height:80px}
+.lot-hist{display:flex;flex-wrap:wrap;gap:4px;min-height:24px;font-size:13px}
+.lot-hist span{background:var(--panel2);border-radius:6px;padding:1px 7px}
+.lot-info{font-size:13px;color:var(--mute)}
+.chk{font-size:14px;display:flex;gap:6px;align-items:center}
+.timer-disp{text-align:center;font-size:64px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--cyan);line-height:1.15}
+.timer-disp.alarm{color:var(--red);animation:blink .5s steps(2) infinite}
+.swatches{display:flex;gap:8px;margin:8px 0}
+.sw{width:30px;height:30px;border-radius:50%;border:3px solid transparent;padding:0}
+.sw.on{border-color:#fff;box-shadow:0 0 0 2px var(--cyan)}
+#ink{position:fixed;inset:0;z-index:900;pointer-events:none}
+#ink.active{pointer-events:auto;cursor:crosshair}
+body.inking .tools{box-shadow:0 0 0 3px var(--pink),0 16px 50px rgba(0,0,0,.5)}
+@media(max-width:700px){.tools{right:8px;width:min(260px,calc(100vw - 16px))}}
+.viz text.y{fill:var(--yellow)}.viz text.c{fill:var(--cyan)}.viz text.p{fill:var(--pink)}.viz text.o{fill:var(--orange)}.viz text.g{fill:var(--green)}
+.seg button:disabled{opacity:.4}
+.ctrl input[type=range]:disabled{opacity:.35}
+</style>
+</head>
+<body class="tools-open">
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="kicker">高中選修化學 I（翰林版）· 第二章</div>
+    <h1>氣體</h1>
+    <p>2-1 氣體的性質與壓力 ｜ 2-2 氣體定律 ｜ 2-3 理想氣體方程式 ｜ 2-4 道耳頓分壓定律</p>
+  </div>
+</header>
+
+<nav class="top"><div class="in">
+  <a href="../" title="回到選修化學 I 目錄"><b>⌂</b>選修化學 I</a>
+  <a href="#s1"><b>2-1</b>壓力</a>
+  <a href="#s2"><b>2-2</b>氣體定律</a>
+  <a href="#s3"><b>2-3</b>PV = nRT</a>
+  <a href="#s4"><b>2-4</b>分壓定律</a>
+  <a href="#yt"><b>▶</b>補充影片</a>
+  <a href="#review"><b>★</b>總複習</a>
+</div></nav>
+
+<main>
+
+<!-- ================= 2-1 ================= -->
+<section class="unit" id="s1">
+  <div class="unit-head"><span class="tag">2-1</span><div>
+    <h2>氣體的性質與壓力</h2>
+    <ul><li>1 atm = 76 cmHg = 760 mmHg = 760 torr = 101325 Pa ≈ 1013 hPa</li><li>開口式壓力計 P氣 = P大氣 ± h；閉口式 P氣 = h；計算一律用絕對溫度 T = t + 273</li></ul>
+  </div></div>
+  <div class="grid-a">
+    <div class="card"><h3><span class="n">1</span>NotebookLM 簡報</h3><div class="carousel" data-slides="2,3,4,5"></div></div>
+    <div class="card"><h3><span class="n">4</span>資訊圖表</h3><div class="info-crop" data-crop="s1" role="img" aria-label="資訊圖表：氣體的性質與壓力"></div><div class="cap">點一下放大全圖</div></div>
+  </div>
+  <div class="grid-b">
+    <div class="card viz"><h3><span class="n">2</span>互動視覺化：壓力計實驗室</h3>
+      <div class="seg" id="v1tabs"><button class="on" data-m="open">開口式壓力計</button><button data-m="closed">閉口式壓力計</button></div>
+      <svg id="v1" viewBox="0 0 520 320"></svg>
+      <div class="ctrl">
+        <label>P氣 = <b id="v1pv"></b> cmHg <input type="range" id="v1p" min="20" max="140" value="88"></label>
+        <label id="v1atmL">P大氣 = <b id="v1av"></b> cmHg <input type="range" id="v1a" min="60" max="80" value="76"></label>
+      </div>
+      <div class="seg" id="v1pre" style="margin-top:10px"><button data-v="open,88,76">例題 2-1-2（開口 88）</button><button data-v="open,66,76">氣體壓力 &lt; 大氣</button><button data-v="closed,38,76">評量第 2 題（閉口 38）</button><button data-v="closed,76,76">托里切利（76）</button></div>
+      <div class="readout" id="v1out"></div>
+    </div>
+    <div class="card"><h3><span class="n">3</span>隨堂評量</h3><div class="quiz" data-quiz="s1"></div></div>
+  </div>
+</section>
+
+<!-- ================= 2-2 ================= -->
+<section class="unit" id="s2">
+  <div class="unit-head"><span class="tag">2-2</span><div>
+    <h2>氣體定律</h2>
+    <ul><li>波以耳（定溫）P₁V₁ = P₂V₂；查理（定壓）V₁/T₁ = V₂/T₂；定容 P₁/T₁ = P₂/T₂</li><li>亞佛加厥：同溫同壓下 V ∝ n；綜合 P₁V₁/T₁ = P₂V₂/T₂</li></ul>
+  </div></div>
+  <div class="grid-a">
+    <div class="card"><h3><span class="n">1</span>NotebookLM 簡報</h3><div class="carousel" data-slides="6,7,8,9"></div></div>
+    <div class="card"><h3><span class="n">4</span>資訊圖表</h3><div class="info-crop" data-crop="s2" role="img" aria-label="資訊圖表：氣體定律"></div><div class="cap">點一下放大全圖</div></div>
+  </div>
+  <div class="grid-b">
+    <div class="card viz"><h3><span class="n">2</span>互動視覺化：活塞容器（1 mol 氣體）</h3>
+      <div class="seg" id="v2tabs"><button class="on" data-m="boyle">波以耳（定溫）</button><button data-m="charles">查理（定壓）</button><button data-m="gay">定容（P–T）</button></div>
+      <svg id="v2" viewBox="0 0 520 320"></svg>
+      <div class="ctrl">
+        <label id="v2xL"><span id="v2xn"></span> = <b id="v2xv"></b> <input type="range" id="v2x"></label>
+        <label id="v2fL"><span id="v2fn"></span> = <b id="v2fv"></b> <input type="range" id="v2f"></label>
+        <button class="btn" id="v2ref">📍 設為起點</button>
+      </div>
+      <div class="seg" id="v2pre" style="margin-top:10px"></div>
+      <div class="readout" id="v2out"></div>
+      <p class="hint">粒子速率隨溫度變快；拖曳滑桿改變一個量，觀察另一個量怎麼變。按「設為起點」後可比較前後比值。</p>
+    </div>
+    <div class="card"><h3><span class="n">3</span>隨堂評量</h3><div class="quiz" data-quiz="s2"></div></div>
+  </div>
+</section>
+
+<!-- ================= 2-3 ================= -->
+<section class="unit" id="s3">
+  <div class="unit-head"><span class="tag">2-3</span><div>
+    <h2>理想氣體方程式與氣體分子動力論</h2>
+    <ul><li>PV = nRT，R = 0.082 atm·L/(mol·K)；STP 莫耳體積 22.4 L、25°C 約 24.5 L</li><li>M = WRT/PV、d = PM/RT；同溫下平均動能相同，真實氣體在高溫低壓時最接近理想</li></ul>
+  </div></div>
+  <div class="grid-a">
+    <div class="card"><h3><span class="n">1</span>NotebookLM 簡報</h3><div class="carousel" data-slides="10,12,13,11"></div></div>
+    <div class="card"><h3><span class="n">4</span>資訊圖表</h3><div class="info-crop" data-crop="s3" role="img" aria-label="資訊圖表：理想氣體方程式"></div><div class="cap">點一下放大全圖</div></div>
+  </div>
+  <div class="grid-b">
+    <div class="card viz"><h3><span class="n">2</span>互動視覺化：PV = nRT 計算機</h3>
+      <div class="seg" id="v3tabs"><button class="on" data-m="calc">PV = nRT 計算機</button><button data-m="bag">安全氣囊</button></div>
+      <div id="v3calc">
+        <div class="seg" id="v3unk"><span class="hint" style="margin:4px 6px 0 0">要求的量：</span><button data-u="P">P</button><button class="on" data-u="V">V</button><button data-u="n">n</button><button data-u="T">T</button></div>
+        <svg id="v3" viewBox="0 0 520 260"></svg>
+        <div class="ctrl">
+          <label>P = <b id="v3Pv"></b> atm <input type="range" id="v3P" min="0.1" max="10" step="0.01" value="1"></label>
+          <label>V = <b id="v3Vv"></b> L <input type="range" id="v3V" min="0.1" max="50" step="0.005" value="22.4"></label>
+          <label>n = <b id="v3nv"></b> mol <input type="range" id="v3n" min="0.01" max="5" step="0.005" value="1"></label>
+          <label>T = <b id="v3Tv"></b> K <input type="range" id="v3T" min="50" max="1000" step="1" value="273"></label>
+        </div>
+        <div class="seg" id="v3gas" style="margin-top:10px"><span class="hint" style="margin:4px 6px 0 0">氣體：</span><button data-g="H₂,2">H₂</button><button data-g="He,4">He</button><button class="on" data-g="N₂,28">N₂</button><button data-g="O₂,32">O₂</button><button data-g="Ar,40">Ar</button><button data-g="CO₂,44">CO₂</button></div>
+        <div class="seg" id="v3pre"><span class="hint" style="margin:4px 6px 0 0">例子：</span><button data-v="V,1,0,1,273">STP 莫耳體積</button><button data-v="V,1,0,1,298">25°C 莫耳體積</button><button data-v="P,0,10,2,300">例題 2-3-1</button><button data-v="n,1,0.615,0,300,Ar">例題 2-3-2</button></div>
+      </div>
+      <div id="v3bagBox" hidden>
+        <svg id="v3b" viewBox="0 0 520 260"></svg>
+        <div class="ctrl">
+          <label>NaN₃ = <b id="v3mv"></b> g <input type="range" id="v3m" min="0" max="130" step="1" value="65"></label>
+          <label>溫度 = <b id="v3tv"></b> °C <input type="range" id="v3t" min="-10" max="60" step="1" value="27"></label>
+        </div>
+      </div>
+      <div class="readout" id="v3out"></div>
+    </div>
+    <div class="card"><h3><span class="n">3</span>隨堂評量</h3><div class="quiz" data-quiz="s3"></div></div>
+  </div>
+</section>
+
+<!-- ================= 2-4 ================= -->
+<section class="unit" id="s4">
+  <div class="unit-head"><span class="tag">2-4</span><div>
+    <h2>道耳頓分壓定律</h2>
+    <ul><li>P總 = P₁ + P₂ + …；Pᵢ = Xᵢ × P總，同溫同體積下分壓比 = 莫耳數比</li><li>排水集氣法：P氣 = P大氣 − P水蒸氣（瓶內外水面等高時）</li></ul>
+  </div></div>
+  <div class="grid-a">
+    <div class="card"><h3><span class="n">1</span>NotebookLM 簡報</h3><div class="carousel" data-slides="14,15,16,17"></div></div>
+    <div class="card"><h3><span class="n">4</span>資訊圖表</h3><div class="info-crop" data-crop="s4" role="img" aria-label="資訊圖表：道耳頓分壓定律"></div><div class="cap">點一下放大全圖</div></div>
+  </div>
+  <div class="grid-b">
+    <div class="card viz"><h3><span class="n">2</span>互動視覺化：混合氣體與排水集氣</h3>
+      <div class="seg" id="v4tabs"><button class="on" data-m="mix">混合氣體分壓</button><button data-m="water">排水集氣法</button></div>
+      <svg id="v4" viewBox="0 0 520 300"></svg>
+      <div class="ctrl" id="v4mixC">
+        <label><span class="c">N₂</span> = <b id="v4av"></b> mol <input type="range" id="v4a" min="0" max="1" step="0.01" value="0.10"></label>
+        <label><span class="o">O₂</span> = <b id="v4bv"></b> mol <input type="range" id="v4b" min="0" max="1" step="0.01" value="0.30"></label>
+        <label><span class="g">He</span> = <b id="v4cv"></b> mol <input type="range" id="v4c" min="0" max="1" step="0.01" value="0"></label>
+        <label>V = <b id="v4Vv"></b> L <input type="range" id="v4V" min="1" max="10" step="0.1" value="2"></label>
+        <label>T = <b id="v4Tv"></b> K <input type="range" id="v4T" min="200" max="600" step="1" value="300"></label>
+      </div>
+      <div class="seg" id="v4pre" style="margin-top:10px"><button data-v="0.10,0.30,0,2,300">例題 2-4-1</button><button data-v="0.25,0.25,0,5,300">N₂ 與 O₂ 等莫耳</button><button data-v="0.79,0.21,0,24.6,300">空氣（約 1 atm）</button></div>
+      <div class="ctrl" id="v4watC" hidden>
+        <label>水溫 = <b id="v4wtv"></b> °C <input type="range" id="v4wt" min="10" max="40" step="1" value="25"></label>
+        <label>大氣壓力 = <b id="v4wpv"></b> mmHg <input type="range" id="v4wp" min="730" max="780" step="1" value="760"></label>
+      </div>
+      <div class="readout" id="v4out"></div>
+    </div>
+    <div class="card"><h3><span class="n">3</span>隨堂評量</h3><div class="quiz" data-quiz="s4"></div></div>
+  </div>
+</section>
+
+<!-- ================= YouTube ================= -->
+<section class="unit" id="yt">
+  <div class="unit-head"><span class="tag">▶</span><div>
+    <h2>補充影片（YouTube）</h2>
+    <ul><li>貼上 YouTube 網址就能插入；支援 youtube.com/watch、youtu.be 短網址、Shorts，以及含開始時間（t=）的網址</li><li>插入過的影片會記在這台電腦的瀏覽器裡，下次開啟還在（其他人的電腦看不到）</li></ul>
+  </div></div>
+  <div class="card">
+    <div class="yt-form">
+      <input id="ytUrl" type="text" inputmode="url" placeholder="貼上 YouTube 網址，例如 https://www.youtube.com/watch?v=…" aria-label="YouTube 網址">
+      <input id="ytTitle" type="text" placeholder="影片標題（可不填）" aria-label="影片標題">
+      <button class="btn pri" id="ytAdd">＋ 插入影片</button>
+    </div>
+    <p class="yt-msg" id="ytMsg"></p>
+    <div class="yt-player" id="ytPlayer"><div class="yt-empty">尚未插入影片<br><span>在上方貼上 YouTube 網址後按「插入影片」</span></div></div>
+    <div class="yt-bar" id="ytBar" hidden><b id="ytNow"></b><a id="ytOpen" target="_blank" rel="noopener">在 YouTube 開啟 ↗</a></div>
+    <p class="hint" id="ytFileHint" hidden>若影片顯示「錯誤 153」或無法播放，是因為網頁是直接從檔案開啟；請按「在 YouTube 開啟」觀看。</p>
+    <div class="yt-list" id="ytList"></div>
+  </div>
+</section>
+
+<!-- ================= Review ================= -->
+<section class="unit" id="review">
+  <div class="unit-head"><span class="tag">★</span><div>
+    <h2>總複習</h2>
+    <ul><li>本章重點總整理、形成性評量 10 題（附答案）、完整資訊圖表與教學影片</li></ul>
+  </div></div>
+  <div class="review-grid">
+    <div>
+      <div class="card"><h3><span class="n">1</span>NotebookLM 簡報：總整理與形成性評量</h3><div class="carousel" data-slides="1,18,19,20"></div></div>
+      <div class="card" style="margin-top:18px"><h3><span class="n">▶</span>NotebookLM 教學影片</h3>
+        <div class="yt-player" id="mainVideo"><div class="yt-empty">教學影片尚未上傳到 YouTube<br><span>影片檔在單元資料夾的「03_教學影片」；上傳後把網址提供給 Claude 即可嵌入這裡</span></div></div>
+      </div>
+    </div>
+    <div class="card"><h3><span class="n">4</span>完整資訊圖表</h3><img class="full-info" src="assets/infographic.jpg" alt="氣體章節完整資訊圖表"><div class="cap">點一下放大</div></div>
+  </div>
+</section>
+</main>
+
+<!-- ================= Tools ================= -->
+<aside class="tools" id="tools">
+  <div class="tools-head" id="toolsHead"><span>🧰 教學工具</span><button id="toolsMin" title="收合 / 展開">—</button></div>
+  <div class="tools-body">
+    <div class="tool-tabs">
+      <button class="on" data-t="lot">🎲 抽籤</button><button data-t="timer">⏱ 計時</button><button data-t="pen">✏️ 畫筆</button>
+    </div>
+
+    <div class="tool-pane on" data-p="lot">
+      <div class="trow">座號 <input type="number" id="lotFrom" value="1" min="1"> 到 <input type="number" id="lotTo" value="30" min="1"></div>
+      <label class="chk"><input type="checkbox" id="lotNoRep" checked> 抽過的不重複</label>
+      <div class="lot-num" id="lotNum">?</div>
+      <button class="tbig" id="lotGo">🎲 開始抽籤</button>
+      <div class="lot-info" id="lotInfo">已抽：</div>
+      <div class="lot-hist" id="lotHist"></div>
+      <div class="trow"><button class="tbtn" id="lotReset">清除紀錄</button><label class="chk" style="flex:1"><input type="checkbox" id="lotBig" checked> 放大顯示</label></div>
+    </div>
+
+    <div class="tool-pane" data-p="timer">
+      <div class="timer-disp" id="tDisp">03:00</div>
+      <div class="trow">
+        <button class="tbtn" data-s="30">30秒</button><button class="tbtn" data-s="60">1分</button><button class="tbtn" data-s="180">3分</button><button class="tbtn" data-s="300">5分</button><button class="tbtn" data-s="600">10分</button>
+      </div>
+      <div class="trow">
+        <button class="tbtn" data-d="-60">−1分</button><button class="tbtn" data-d="-10">−10秒</button><button class="tbtn" data-d="10">+10秒</button><button class="tbtn" data-d="60">+1分</button>
+      </div>
+      <button class="tbig" id="tStart">▶ 開始</button>
+      <div class="trow"><button class="tbtn" id="tReset">↺ 重設</button><button class="tbtn" id="tBig">⛶ 放大</button><label class="chk"><input type="checkbox" id="tSound" checked> 鈴聲</label></div>
+    </div>
+
+    <div class="tool-pane" data-p="pen">
+      <button class="tbig" id="penToggle">✏️ 開始畫筆</button>
+      <div class="swatches" id="penColors"></div>
+      <div class="trow">粗細 <input type="range" id="penSize" min="2" max="24" value="5" style="flex:1;accent-color:var(--cyan)"></div>
+      <div class="trow" id="penModes"><button class="tbtn on" data-m="pen">畫筆</button><button class="tbtn" data-m="hl">螢光筆</button><button class="tbtn" data-m="er">橡皮擦</button></div>
+      <div class="trow"><button class="tbtn" id="penUndo">↶ 復原</button><button class="tbtn" id="penClear">🗑 全部清除</button></div>
+      <p class="hint">畫的內容會跟著頁面捲動。按 Esc 結束畫筆。</p>
+    </div>
+  </div>
+</aside>
+
+<canvas id="ink"></canvas>
+<div class="overlay" id="lightbox"><img alt="放大圖"></div>
+<div class="overlay" id="bigShow"><div><div class="bignum" id="bigNum"></div><div class="bigsub" id="bigSub">點任意處關閉</div></div></div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function txt(g,x,y,s,cls='lbl',anchor='middle'){const t=el('text',{x,y,class:cls,'text-anchor':anchor,'dominant-baseline':'middle'},g);t.textContent=s;return t;}
+const D=Math.PI/180;
+function norm(d){while(d<=-Math.PI)d+=2*Math.PI;while(d>Math.PI)d-=2*Math.PI;return d;}
+function arcD(P,Q,R,r,sector){const a1=Math.atan2(Q.y-P.y,Q.x-P.x);const d=norm(Math.atan2(R.y-P.y,R.x-P.x)-a1);const a2=a1+d;
+  const x1=P.x+r*Math.cos(a1),y1=P.y+r*Math.sin(a1),x2=P.x+r*Math.cos(a2),y2=P.y+r*Math.sin(a2);
+  const s=`A${r},${r} 0 0 ${d>0?1:0} ${x2.toFixed(1)},${y2.toFixed(1)}`;
+  return sector?`M${P.x},${P.y} L${x1.toFixed(1)},${y1.toFixed(1)} ${s} Z`:`M${x1.toFixed(1)},${y1.toFixed(1)} ${s}`;}
+function midDir(P,Q,R){const a1=Math.atan2(Q.y-P.y,Q.x-P.x);return a1+norm(Math.atan2(R.y-P.y,R.x-P.x)-a1)/2;}
+function ang(P,Q,R){return Math.abs(norm(Math.atan2(Q.y-P.y,Q.x-P.x)-Math.atan2(R.y-P.y,R.x-P.x)))/D;}
+function dist(P,Q){return Math.hypot(P.x-Q.x,P.y-Q.y);}
+function svgPt(svg,e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
+function drag(svg,h,onMove){h.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();h.setPointerCapture(e.pointerId);
+  const mv=ev=>onMove(svgPt(svg,ev));const up=()=>{h.removeEventListener('pointermove',mv);h.removeEventListener('pointerup',up);};
+  h.addEventListener('pointermove',mv);h.addEventListener('pointerup',up);});}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const f0=v=>Math.round(v), f1=v=>(Math.round(v*10)/10).toString();
+
+/* ================= Carousel ================= */
+function buildCarousel(root){
+  const ids=root.dataset.slides.split(',').map(Number);
+  root.innerHTML=`<div class="car-stage">${ids.map((n,i)=>`<img src="assets/slides/slide${String(n).padStart(2,'0')}.jpg" alt="簡報第 ${n} 頁" class="${i?'':'on'}" draggable="false">`).join('')}
+    <button class="car-btn prev" aria-label="上一張">‹</button><button class="car-btn next" aria-label="下一張">›</button>
+    <button class="car-fs" title="全螢幕播放">⛶</button></div>
+    <div class="car-bar"><div class="dots">${ids.map((n,i)=>`<button class="dot ${i?'':'on'}" aria-label="第 ${i+1} 張"></button>`).join('')}</div><span class="count">1 / ${ids.length}</span></div>`;
+  let i=0;const st=$('.car-stage',root),imgs=$$('img',root),dots=$$('.dot',root),cnt=$('.count',root);
+  const go=k=>{i=(k+ids.length)%ids.length;imgs.forEach((im,j)=>im.classList.toggle('on',j===i));dots.forEach((d,j)=>d.classList.toggle('on',j===i));cnt.textContent=`${i+1} / ${ids.length}`;};
+  $('.prev',root).onclick=()=>go(i-1);$('.next',root).onclick=()=>go(i+1);
+  dots.forEach((d,j)=>d.onclick=()=>go(j));
+  root.tabIndex=0;
+  const key=e=>{if(e.key==='ArrowLeft'){go(i-1);e.preventDefault();}if(e.key==='ArrowRight'){go(i+1);e.preventDefault();}};
+  root.addEventListener('keydown',key);
+  document.addEventListener('keydown',e=>{if(document.fullscreenElement===st)key(e);});
+  $('.car-fs',root).onclick=()=>{document.fullscreenElement?document.exitFullscreen():st.requestFullscreen&&st.requestFullscreen();};
+  let sx=null;st.addEventListener('pointerdown',e=>{if(!e.target.closest('button'))sx=e.clientX;});
+  st.addEventListener('pointerup',e=>{if(sx!==null&&Math.abs(e.clientX-sx)>50)go(i+(e.clientX<sx?1:-1));sx=null;});
+}
+$$('.carousel').forEach(buildCarousel);
+
+/* ================= Infographic crops ================= */
+const IW=1536,IH=2752;
+const CROPS={s1:[30,341,724,1079],s2:[782,341,726,1118],s3:[30,1424,724,936],s4:[782,1483,726,877]};
+const lb=$('#lightbox');
+function openLB(src){$('img',lb).src=src;lb.classList.add('on');}
+lb.onclick=()=>lb.classList.remove('on');
+$$('.info-crop').forEach(r=>{const[x,y,w,h]=CROPS[r.dataset.crop];
+  r.style.aspectRatio=`${w}/${h}`;r.style.backgroundImage='url(assets/infographic.jpg)';
+  r.style.backgroundSize=`${IW/w*100}% auto`;r.style.backgroundPosition=`${x/(IW-w)*100}% ${y/(IH-h)*100}%`;
+  r.onclick=()=>openLB('assets/infographic.jpg');});
+$('.full-info').onclick=()=>openLB('assets/infographic.jpg');
+
+/* ================= Quiz ================= */
+const QUIZ={
+ s1:[
+  {q:'1.5 atm 等於多少 mmHg？',o:['114 mmHg','760 mmHg','1013 mmHg','1140 mmHg'],a:3,e:'1 atm = 760 mmHg，1.5 × 760 = 1140 mmHg。'},
+  {q:'閉口式水銀壓力計兩液面高度差 19 cm，氣體壓力為多少 atm？',o:['0.19 atm','0.25 atm','0.50 atm','1.25 atm'],a:1,e:'閉口式 P氣 = h = 19 cmHg，19 ÷ 76 = 0.25 atm。'},
+  {q:'開口式壓力計，大氣壓力 76 cmHg，接氣體那端的水銀面比開口端「高」10 cm，氣體壓力為？',o:['66 cmHg','76 cmHg','86 cmHg','10 cmHg'],a:0,e:'氣體端液面較高，表示氣體壓力比大氣小：P = 76 − 10 = 66 cmHg。'},
+  {q:'托里切利實驗中，把玻璃管傾斜，管內水銀柱的「鉛直高度」會？',o:['變大','變小','不變，仍約 76 cm','變成 0'],a:2,e:'水銀柱的鉛直高度只由大氣壓力決定；傾斜時管內水銀長度變長，但鉛直高度不變。'}],
+ s2:[
+  {q:'定溫下，2.0 atm、3.0 L 的氣體膨脹到 6.0 L，壓力變為？',o:['0.5 atm','1.0 atm','4.0 atm','6.0 atm'],a:1,e:'P₁V₁ = P₂V₂，P₂ = 2.0 × 3.0 ÷ 6.0 = 1.0 atm。'},
+  {q:'定壓下，氣體由 27°C 加熱到 327°C，體積變為原來的幾倍？',o:['約 12 倍','2 倍','1.5 倍','不變'],a:1,e:'要用絕對溫度：600 K ÷ 300 K = 2 倍。用 327 ÷ 27 是常見錯誤！'},
+  {q:'定壓下，氣體由 10°C 升溫到 20°C，體積大約變為？',o:['2 倍','1.5 倍','1.04 倍','0.5 倍'],a:2,e:'293 K ÷ 283 K ≈ 1.04 倍，不是 2 倍。'},
+  {q:'同溫同壓下，1 L N₂ 與 3 L H₂ 完全反應生成 NH₃，可得 NH₃ 幾升？',o:['1 L','2 L','3 L','4 L'],a:1,e:'N₂ + 3H₂ → 2NH₃，氣體體積比 = 係數比 1 : 3 : 2，生成 2 L。'}],
+ s3:[
+  {q:'0.50 mol 理想氣體在 STP（0°C、1 atm）的體積約為？',o:['11.2 L','12.3 L','22.4 L','44.8 L'],a:0,e:'STP 莫耳體積 22.4 L，0.50 × 22.4 = 11.2 L。'},
+  {q:'某氣體在 STP 下的密度為 1.43 g/L，最可能是？',o:['N₂（28）','O₂（32）','CO₂（44）','He（4）'],a:1,e:'M = d × 22.4 = 1.43 × 22.4 ≈ 32 g/mol，最可能是 O₂。'},
+  {q:'同溫下，H₂、O₂、N₂、CO₂ 四種氣體，哪一種分子的平均速率最大？',o:['H₂','O₂','N₂','CO₂'],a:0,e:'同溫下平均動能相同，分子量越小速率越大，H₂ 最快。'},
+  {q:'真實氣體在哪種條件下最接近理想氣體？',o:['低溫、高壓','低溫、低壓','高溫、高壓','高溫、低壓'],a:3,e:'高溫、低壓時分子間距離大、吸引力影響小，最接近理想氣體。'}],
+ s4:[
+  {q:'容器中有 0.20 mol He 與 0.30 mol Ne，總壓 5.0 atm，He 的分壓為？',o:['1.0 atm','2.0 atm','2.5 atm','3.0 atm'],a:1,e:'X(He) = 0.20 ÷ 0.50 = 0.40，P(He) = 0.40 × 5.0 = 2.0 atm。'},
+  {q:'排水集氣法，水面等高，大氣壓力 755 mmHg，水的飽和蒸氣壓 25 mmHg，收集氣體的壓力為？',o:['780 mmHg','755 mmHg','730 mmHg','25 mmHg'],a:2,e:'P氣 = P大氣 − P水蒸氣 = 755 − 25 = 730 mmHg。'},
+  {q:'同一容器內裝「相同質量」的 H₂ 與 O₂，兩者的分壓比 P(H₂) : P(O₂) 為？',o:['1 : 1','1 : 16','16 : 1','2 : 32'],a:2,e:'分壓比 = 莫耳數比；同質量時莫耳數比 = (1/2) : (1/32) = 16 : 1。'},
+  {q:'空氣中 O₂ 的莫耳分率約 0.21，在總壓 1.0 atm 時 O₂ 的分壓約為？',o:['0.21 atm','0.79 atm','1.0 atm','21 atm'],a:0,e:'P(O₂) = X(O₂) × P總 = 0.21 × 1.0 = 0.21 atm。'}]
+};
+function buildQuiz(root){
+  const qs=QUIZ[root.dataset.quiz];let score=0,done=0;
+  root.innerHTML=qs.map((it,k)=>`<div class="q" data-k="${k}"><p class="qt"><b>Q${k+1}</b>${it.q}</p><div class="opts">${it.o.map((o,j)=>`<button class="opt" data-j="${j}"><span>${'ABCD'[j]}</span>${o}</button>`).join('')}</div><p class="exp"></p></div>`).join('')
+    +`<div class="q-foot"><span class="score">得分 0 / ${qs.length}</span><button class="btn" data-reset>重新作答</button></div>`;
+  $$('.q',root).forEach(qd=>{const it=qs[qd.dataset.k];
+    $$('.opt',qd).forEach(b=>b.onclick=()=>{if(qd.classList.contains('answered'))return;qd.classList.add('answered');
+      const ok=+b.dataset.j===it.a;b.classList.add(ok?'right':'wrong');$$('.opt',qd)[it.a].classList.add('right');
+      const ex=$('.exp',qd);ex.textContent=(ok?'✔ 答對了！':'✘ 正解是 '+'ABCD'[it.a]+'。')+' '+it.e;ex.classList.add(ok?'ok':'no');
+      if(ok)score++;done++;$('.score',root).textContent=`得分 ${score} / ${qs.length}`+(done===qs.length&&score===qs.length?'  🎉 全對！':'');});});
+  $('[data-reset]',root).onclick=()=>buildQuiz(root);
+}
+$$('.quiz').forEach(buildQuiz);
+
+/* ================= shared chem helpers ================= */
+const R=0.08206;
+const fx=(v,d=2)=>{const s=(Math.round(v*10**d)/10**d).toFixed(d);return s.replace('-','−');};
+const sig=(v,s=3)=>{if(!isFinite(v))return '—';if(v===0)return '0';const d=Math.max(0,s-1-Math.floor(Math.log10(Math.abs(v))));return fx(v,Math.min(d,4));};
+function clear(svg){while(svg.firstChild)svg.removeChild(svg.firstChild);}
+function segTabs(box,attr,cb){$$('button[data-'+attr+']',box).forEach(b=>b.onclick=()=>{$$('button[data-'+attr+']',box).forEach(x=>x.classList.toggle('on',x===b));cb(b.dataset[attr],b);});}
+/* plot frame: returns mapping functions */
+function frame(g,x0,y0,w,h,xmax,ymax,xl,yl,xt,yt,xmin=0){
+  const X=v=>x0+(v-xmin)/(xmax-xmin)*w, Y=v=>y0+h-v/ymax*h;
+  for(let v=xmin;v<=xmax+1e-9;v+=xt){el('line',{x1:X(v),y1:y0,x2:X(v),y2:y0+h,stroke:'rgba(120,190,255,.12)'},g);txt(g,X(v),y0+h+12,String(Math.round(v*100)/100),'lbl sm');}
+  for(let v=0;v<=ymax+1e-9;v+=yt){el('line',{x1:x0,y1:Y(v),x2:x0+w,y2:Y(v),stroke:'rgba(120,190,255,.12)'},g);txt(g,x0-6,Y(v),String(Math.round(v*100)/100),'lbl sm','end');}
+  el('line',{x1:x0,y1:y0+h,x2:x0+w,y2:y0+h,stroke:'#9fb6d9','stroke-width':1.5},g);
+  el('line',{x1:X(Math.max(0,xmin)),y1:y0,x2:X(Math.max(0,xmin)),y2:y0+h,stroke:'#9fb6d9','stroke-width':1.5},g);
+  txt(g,x0+w,y0+h+28,xl,'lbl sm','end');txt(g,x0-2,y0-12,yl,'lbl sm','start');
+  return {X,Y};
+}
+
+/* ================= V1: manometer ================= */
+(function(){
+  const svg=$('#v1');let type='open';
+  const pS=$('#v1p'),aS=$('#v1a');
+  function draw(){
+    const Pg=+pS.value,Pa=+aS.value;$('#v1pv').textContent=Pg;$('#v1av').textContent=Pa;
+    $('#v1atmL').style.opacity=type==='open'?1:.35;aS.disabled=type!=='open';
+    const h=type==='open'?Pg-Pa:Pg; // positive: gas side lower
+    const s=1.0,mid=175,yL=mid+h*s/2,yR=mid-h*s/2;
+    clear(svg);
+    const LX=230,RX=330,TOP=type==="open"?40:30,BOT=250;
+    // gas bulb
+    el('circle',{cx:130,cy:95,r:46,fill:'rgba(54,224,255,.18)',stroke:'#9fb6d9','stroke-width':3},svg);
+    for(let i=0;i<Math.round(Pg/8);i++){const a=i*2.4,r=8+((i*13)%34);el('circle',{cx:130+r*Math.cos(a),cy:95+r*Math.sin(a),r:3,fill:'#36e0ff'},svg);}
+    txt(svg,130,95,'氣體','lbl');
+    el('path',{d:`M176,95 H${LX}`,stroke:'rgba(200,225,255,.35)','stroke-width':26,fill:'none'},svg);
+    // glass U
+    el('path',{d:`M${LX},95 V${BOT} A50,50 0 0 0 ${RX},${BOT} V${TOP}`,stroke:'rgba(200,225,255,.25)','stroke-width':30,fill:'none','stroke-linecap':type==='open'?'butt':'round'},svg);
+    // mercury
+    el('rect',{x:LX-11,y:Math.min(yL,BOT),width:22,height:Math.max(0,BOT-yL),fill:'#c9d2dd'},svg);
+    el('rect',{x:RX-11,y:Math.min(yR,BOT),width:22,height:Math.max(0,BOT-yR),fill:'#c9d2dd'},svg);
+    el('path',{d:`M${LX},${BOT} A50,50 0 0 0 ${RX},${BOT}`,stroke:'#c9d2dd','stroke-width':22,fill:'none'},svg);
+    // gas fill above left mercury
+    el('rect',{x:LX-11,y:95,width:22,height:Math.max(0,yL-95),fill:'rgba(54,224,255,.18)'},svg);
+    // levels and h
+    [yL,yR].forEach(y=>el('line',{x1:LX-30,y1:y,x2:RX+70,y2:y,stroke:'#ffd84d','stroke-dasharray':'5 4','stroke-width':1.5},svg));
+    if(Math.abs(h)>1){const ax=RX+55;el('line',{x1:ax,y1:yL,x2:ax,y2:yR,stroke:'#ffd84d','stroke-width':2.5},svg);
+      el('path',{d:`M${ax-5},${yR+(yR<yL?8:-8)} L${ax},${yR} L${ax+5},${yR+(yR<yL?8:-8)}`,stroke:'#ffd84d',fill:'none','stroke-width':2.5},svg);
+      el('path',{d:`M${ax-5},${yL+(yL<yR?8:-8)} L${ax},${yL} L${ax+5},${yL+(yL<yR?8:-8)}`,stroke:'#ffd84d',fill:'none','stroke-width':2.5},svg);}
+    txt(svg,RX+75,(yL+yR)/2,`h = ${Math.abs(h)} cm`,'lbl y','start');
+    if(type==='open'){txt(svg,RX,20,'↓ P大氣','lbl c');}
+    else{el('rect',{x:RX-11,y:TOP,width:22,height:Math.max(0,yR-TOP),fill:'rgba(0,0,0,.35)'},svg);txt(svg,RX+28,TOP+10,'真空','lbl sm','start');}
+    // readout
+    let f;
+    if(type==='open'){
+      if(h>0)f=`氣體端液面<b class="c">較低</b>（被壓下去）→ P氣 = P大氣 + h = ${Pa} + ${h} = <b class="y">${Pg} cmHg</b>`;
+      else if(h<0)f=`氣體端液面<b class="p">較高</b>（被吸上去）→ P氣 = P大氣 − h = ${Pa} − ${-h} = <b class="y">${Pg} cmHg</b>`;
+      else f=`兩邊液面等高 → P氣 = P大氣 = <b class="y">${Pg} cmHg</b>`;
+    }else f=`閉口式：P氣 = h = <b class="y">${Pg} cmHg</b>`;
+    const atm=Pg/76;
+    $('#v1out').innerHTML=`<div class="big">${f}</div>
+      <div>換算：${sig(atm,3)} atm ＝ ${Pg*10} mmHg（torr）＝ ${Math.round(atm*101325).toLocaleString()} Pa ≈ ${sig(atm*1013.25,4)} hPa</div>
+      <div class="hint" style="margin:4px 0 0">若改用水（密度 1.0 g/cm³）當液體，同樣的壓力差需要約 ${sig(Math.abs(h)*13.6/100,3)} m 的水柱高度差。</div>`;
+  }
+  segTabs($('#v1tabs'),'m',m=>{type=m;draw();});
+  pS.oninput=draw;aS.oninput=draw;
+  $$('#v1pre button').forEach(b=>b.onclick=()=>{const[t,p,a]=b.dataset.v.split(',');type=t;$$('#v1tabs button').forEach(x=>x.classList.toggle('on',x.dataset.m===t));pS.value=p;aS.value=a;draw();});
+  draw();
+})();
+
+/* ================= V2: gas laws with piston ================= */
+(function(){
+  const svg=$('#v2');let mode='boyle';const st={T:300,V:24.6,P:1};let ref=null;
+  const xS=$('#v2x'),fS=$('#v2f');
+  const CFG={
+    boyle:{x:['V','L',5,50,0.1],f:['T（固定）','K',200,600,1],law:'P₁V₁ = P₂V₂'},
+    charles:{x:['T','K',100,600,1],f:['P（固定）','atm',1,3,0.05],law:'V₁/T₁ = V₂/T₂'},
+    gay:{x:['T','K',100,600,1],f:['V（固定）','L',10,50,0.5],law:'P₁/T₁ = P₂/T₂'}};
+  const PRE={boyle:[['例題 2-2-1：壓縮到 1/4',()=>{st.T=300;st.V=20;solve();setRef();st.V=5;}],['體積加倍',()=>{st.T=300;st.V=12.3;solve();setRef();st.V=24.6;}]],
+    charles:[['例題 2-2-2：27°C → 127°C',()=>{st.P=1;st.T=300;solve();setRef();st.T=400;}],['迷思：10°C → 20°C',()=>{st.P=1;st.T=283;solve();setRef();st.T=293;}],['冷到 −73°C',()=>{st.P=1;st.T=300;solve();setRef();st.T=200;}]],
+    gay:[['例題 2-2-3：胎壓 27°C → 57°C',()=>{st.V=10;st.T=300;solve();setRef();st.T=330;}],['加熱到 2 倍絕對溫度',()=>{st.V=20;st.T=300;solve();setRef();st.T=600;}]]};
+  function solve(){if(mode==='boyle')st.P=R*st.T/st.V;if(mode==='charles')st.V=R*st.T/st.P;if(mode==='gay')st.P=R*st.T/st.V;}
+  function setRef(){solve();ref={...st};}
+  function syncSliders(){const c=CFG[mode];
+    [[xS,c.x],[fS,c.f]].forEach(([s,a])=>{s.min=a[2];s.max=a[3];s.step=a[4];});
+    $('#v2xn').textContent=c.x[0];$('#v2fn').textContent=c.f[0];
+    if(mode==='boyle'){xS.value=st.V;fS.value=st.T;}
+    if(mode==='charles'){xS.value=st.T;fS.value=st.P;}
+    if(mode==='gay'){xS.value=st.T;fS.value=st.V;}}
+  function readSliders(){if(mode==='boyle'){st.V=+xS.value;st.T=+fS.value;}
+    if(mode==='charles'){st.T=+xS.value;st.P=+fS.value;}if(mode==='gay'){st.T=+xS.value;st.V=+fS.value;}solve();}
+  function setMode(m){mode=m;if(m==='boyle'){st.T=300;st.V=24.6;}if(m==='charles'){st.P=1;st.T=300;}if(m==='gay'){st.V=24.6;st.T=300;}
+    solve();setRef();syncSliders();
+    const pb=$('#v2pre');pb.innerHTML='';PRE[m].forEach(([lab,fn])=>{const b=document.createElement('button');b.textContent=lab;b.onclick=()=>{fn();solve();syncSliders();draw();};pb.appendChild(b);});
+    draw();}
+  // particles
+  const N=34;const parts=Array.from({length:N},()=>({x:Math.random(),y:Math.random(),a:Math.random()*6.283}));
+  const BX=40,BW=170,BOT=290,HMAX=240;
+  let layerStatic,layerP,layerG,dots=[],pist,rod,hits=0,hitRate=0,lastT=performance.now(),acc=0;
+  function boxTop(){return BOT-st.V/50*HMAX;}
+  function draw(){
+    const c=CFG[mode];
+    $('#v2xv').textContent=mode==='boyle'?fx(st.V,1)+' L':`${Math.round(st.T)} K（${fx(st.T-273,0)}°C）`;
+    $('#v2fv').textContent=mode==='boyle'?`${Math.round(st.T)} K`:mode==='charles'?fx(st.P,2)+' atm':fx(st.V,1)+' L';
+    clear(svg);dots=[];
+    layerStatic=el('g',{},svg);
+    el('rect',{x:BX-6,y:BOT-HMAX-12,width:BW+12,height:HMAX+18,rx:8,fill:'none',stroke:'rgba(200,225,255,.35)','stroke-width':3},layerStatic);
+    const top=boxTop();
+    el('rect',{x:BX,y:top,width:BW,height:BOT-top,fill:`rgba(255,${Math.round(220-(st.T-100)/500*150)},80,${0.06+(st.T-100)/500*0.22})`},layerStatic);
+    pist=el('rect',{x:BX-4,y:top-14,width:BW+8,height:14,rx:3,fill:'#9fb6d9'},layerStatic);
+    rod=el('rect',{x:BX+BW/2-5,y:BOT-HMAX-30,width:10,height:Math.max(0,top-14-(BOT-HMAX-30)),fill:'#6f86a8'},layerStatic);
+    layerP=el('g',{},svg);
+    parts.forEach(()=>dots.push(el('circle',{r:4,fill:'#36e0ff'},layerP)));
+    txt(svg,BX+BW/2,BOT-HMAX-40,`P = ${fx(st.P,2)} atm`,'lbl y');
+    txt(svg,BX+BW/2,BOT+16,`V = ${fx(st.V,1)} L ｜ T = ${Math.round(st.T)} K`,'lbl sm');
+    // graph
+    layerG=el('g',{},svg);
+    if(mode==='boyle'){
+      const F=frame(layerG,290,30,210,230,50,10,'V (L)','P (atm)',10,2);
+      let d='';for(let v=2.5;v<=50;v+=0.5){const p=R*st.T/v;if(p>10.5)continue;d+=(d?'L':'M')+F.X(v).toFixed(1)+','+F.Y(Math.min(p,10)).toFixed(1);}
+      el('path',{d,stroke:'#ffd84d','stroke-width':2.5,fill:'none'},layerG);
+      if(ref&&Math.abs(ref.T-st.T)<0.5)el('circle',{cx:F.X(ref.V),cy:F.Y(Math.min(ref.P,10)),r:5,fill:'none',stroke:'#ff7aa8','stroke-width':2},layerG);
+      el('circle',{cx:F.X(st.V),cy:F.Y(Math.min(st.P,10)),r:6,fill:'#fff',stroke:'#36e0ff','stroke-width':3},layerG);
+      txt(layerG,500,44,`定溫 ${Math.round(st.T)} K：雙曲線`,'lbl sm','end');
+    }else{
+      const isC=mode==='charles',ym=isC?50:5;
+      const F=frame(layerG,290,30,210,230,600,ym,'T (K)',isC?'V (L)':'P (atm)',100,isC?10:1);
+      const k=isC?R/st.P:R/st.V;
+      el('line',{x1:F.X(0),y1:F.Y(0),x2:F.X(100),y2:F.Y(k*100),stroke:'#ffd84d','stroke-width':2,'stroke-dasharray':'5 5'},layerG);
+      el('line',{x1:F.X(100),y1:F.Y(k*100),x2:F.X(600),y2:F.Y(Math.min(k*600,ym)),stroke:'#ffd84d','stroke-width':2.5},layerG);
+      if(ref&&((isC&&Math.abs(ref.P-st.P)<1e-6)||(!isC&&Math.abs(ref.V-st.V)<1e-6)))el('circle',{cx:F.X(ref.T),cy:F.Y(isC?ref.V:ref.P),r:5,fill:'none',stroke:'#ff7aa8','stroke-width':2},layerG);
+      el('circle',{cx:F.X(st.T),cy:F.Y(Math.min(isC?st.V:st.P,ym)),r:6,fill:'#fff',stroke:'#36e0ff','stroke-width':3},layerG);
+      txt(layerG,F.X(0)+4,F.Y(0)-12,'0 K = −273°C','lbl sm','start');
+      txt(layerG,500,44,isC?`定壓 ${fx(st.P,2)} atm`:`定容 ${fx(st.V,1)} L`,'lbl sm','end');
+    }
+    // readout
+    const kv=mode==='boyle'?`PV = ${fx(st.P,2)} × ${fx(st.V,1)} = <b class="y">${fx(st.P*st.V,2)}</b>（定值）`:
+      mode==='charles'?`V/T = ${fx(st.V,2)} ÷ ${Math.round(st.T)} = <b class="y">${fx(st.V/st.T,4)}</b>（定值）`:
+      `P/T = ${fx(st.P,2)} ÷ ${Math.round(st.T)} = <b class="y">${fx(st.P/st.T,5)}</b>（定值）`;
+    let cmp='';
+    if(ref){
+      if(mode==='boyle')cmp=`起點 → 現在：V₂/V₁ = ${fx(st.V/ref.V,3)}，P₂/P₁ = ${fx(st.P/ref.P,3)}（體積變 ${fx(st.V/ref.V,2)} 倍，壓力變 ${fx(st.P/ref.P,2)} 倍）`;
+      else{const q=mode==='charles'?'V':'P';const r2=mode==='charles'?st.V/ref.V:st.P/ref.P;
+        cmp=`起點 ${Math.round(ref.T)} K（${fx(ref.T-273,0)}°C）→ ${Math.round(st.T)} K（${fx(st.T-273,0)}°C）：${q}₂/${q}₁ = T₂/T₁ = <b class="c">${fx(r2,3)}</b> 倍`;
+        const c1=ref.T-273,c2=st.T-273;if(c1>=1&&c2>=1&&Math.abs(c2/c1-r2)>0.05)cmp+=`<br><span class="p">✘ 若誤用攝氏溫度算：${Math.round(c2)} ÷ ${Math.round(c1)} = ${fx(c2/c1,2)} 倍（錯！）</span>`;}
+    }
+    $('#v2out').innerHTML=`<div class="big">${c.law}</div><div>${kv}</div><div>${cmp}</div><div class="hint" style="margin:4px 0 0">器壁碰撞頻率（相對值）：<b class="o" id="v2hit">—</b></div>`;
+  }
+  // animation
+  let vis=true;new IntersectionObserver(es=>{vis=es[0].isIntersecting;},{}).observe(svg);
+  function step(now){requestAnimationFrame(step);if(!vis||!dots.length)return;
+    const dt=Math.min(50,now-lastT);lastT=now;const top=boxTop();const w=BW-8,h=Math.max(8,BOT-top-8);
+    const sp=0.0011*Math.sqrt(st.T/300)*dt*170; // px per frame
+    parts.forEach((p,i)=>{let x=p.x*w,y=p.y*h;x+=Math.cos(p.a)*sp;y+=Math.sin(p.a)*sp;
+      if(x<0){x=-x;p.a=Math.PI-p.a;hits++;}if(x>w){x=2*w-x;p.a=Math.PI-p.a;hits++;}
+      if(y<0){y=-y;p.a=-p.a;hits++;}if(y>h){y=2*h-y;p.a=-p.a;hits++;}
+      p.x=clamp(x/w,0,1);p.y=clamp(y/h,0,1);
+      dots[i].setAttribute('cx',(BX+4+p.x*w).toFixed(1));dots[i].setAttribute('cy',(top+4+p.y*h).toFixed(1));});
+    acc+=dt;if(acc>1000){hitRate=hits*1000/acc/ ((BW-8)*2+(BOT-top)*2)*100;hits=0;acc=0;const e=$('#v2hit');if(e)e.textContent=fx(hitRate,1);}}
+  requestAnimationFrame(step);
+  segTabs($('#v2tabs'),'m',setMode);
+  xS.oninput=fS.oninput=()=>{readSliders();draw();};
+  $('#v2ref').onclick=()=>{setRef();draw();};
+  setMode('boyle');
+})();
+
+/* ================= V3: PV = nRT ================= */
+(function(){
+  const svg=$('#v3'),bsv=$('#v3b');let unk='V',gas=['N₂',28],tab='calc';
+  const S={P:$('#v3P'),V:$('#v3V'),n:$('#v3n'),T:$('#v3T')};
+  const U={P:'atm',V:'L',n:'mol',T:'K'};
+  const val={P:1,V:22.4,n:1,T:273};
+  function compute(){['P','V','n','T'].forEach(k=>{if(k!==unk)val[k]=+S[k].value;});
+    if(unk==='P')val.P=val.n*R*val.T/val.V;if(unk==='V')val.V=val.n*R*val.T/val.P;
+    if(unk==='n')val.n=val.P*val.V/(R*val.T);if(unk==='T')val.T=val.P*val.V/(val.n*R);}
+  function draw(){
+    if(tab==='bag')return drawBag();
+    compute();
+    ['P','V','n','T'].forEach(k=>{S[k].disabled=k===unk;if(k===unk)S[k].value=val[k];
+      $('#v3'+k+'v').textContent=k==='T'?Math.round(val[k]):k==='n'?sig(val[k],3):sig(val[k],3);
+      $('#v3'+k+'v').className=k===unk?'y':'';});
+    clear(svg);
+    // box: size by V, dots by n
+    const side=40+Math.sqrt(Math.min(val.V,60)/60)*170, bx=110-side/2, by=130-side/2;
+    el('rect',{x:bx,y:by,width:side,height:side,rx:8,fill:`rgba(255,${Math.round(220-clamp(val.T,50,1000)/1000*150)},80,.12)`,stroke:'#9fb6d9','stroke-width':2.5},svg);
+    const nd=Math.min(80,Math.round(val.n*16));let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+    for(let i=0;i<nd;i++)el('circle',{cx:bx+6+rnd()*(side-12),cy:by+6+rnd()*(side-12),r:3.2,fill:'#36e0ff'},svg);
+    txt(svg,110,by+side+16,`${gas[0]}：${sig(val.n,3)} mol`,'lbl sm');
+    // bars
+    const R0={P:[0,10],V:[0,50],n:[0,5],T:[0,1000]};
+    ['P','V','n','T'].forEach((k,i)=>{const y=40+i*50,x0=270,w=220;const f=clamp(val[k]/R0[k][1],0,1);
+      el('rect',{x:x0,y,width:w,height:16,rx:8,fill:'rgba(120,190,255,.15)'},svg);
+      el('rect',{x:x0,y,width:Math.max(4,w*f),height:16,rx:8,fill:k===unk?'#ffd84d':'#36e0ff'},svg);
+      txt(svg,x0,y-10,`${k} = ${k==='T'?Math.round(val[k]):sig(val[k],3)} ${U[k]}${k===unk?'  ← 所求':''}${val[k]>R0[k][1]?'（超出刻度）':''}`,'lbl sm','start');});
+    const m=val.n*gas[1],d=val.P*gas[1]/(R*val.T);
+    $('#v3out').innerHTML=`<div class="big">PV = nRT：${sig(val.P,3)} × ${sig(val.V,3)} = ${sig(val.n,3)} × 0.0821 × ${Math.round(val.T)}</div>
+      <div>所求 <b class="y">${unk} = ${unk==='T'?Math.round(val[unk])+' K（'+fx(val.T-273,0)+'°C）':sig(val[unk],3)+' '+U[unk]}</b></div>
+      <div>${gas[0]}（M = ${gas[1]}）：質量 W = nM = <b class="c">${sig(m,3)} g</b>；密度 d = PM/RT = <b class="c">${sig(d,3)} g/L</b>（${gas[1]>29?'比空氣重':'比空氣輕'}，空氣平均分子量約 29）</div>
+      <div class="hint" style="margin:4px 0 0">R 取 0.08206 atm·L/(mol·K)；課本常用 0.082，結果第三位有效數字可能略有差異。</div>`;
+  }
+  function drawBag(){
+    const m=+$('#v3m').value,t=+$('#v3t').value,T=t+273;$('#v3mv').textContent=m;$('#v3tv').textContent=t;
+    const nN=m/65*1.5,V=nN*R*T/1;
+    clear(bsv);
+    // steering wheel + bag
+    el('circle',{cx:130,cy:150,r:70,fill:'none',stroke:'#6f86a8','stroke-width':14},bsv);
+    el('line',{x1:130,y1:150,x2:130,y2:220,stroke:'#6f86a8','stroke-width':10},bsv);
+    const r=Math.cbrt(V)*28;
+    el('ellipse',{cx:130+r*0.35,cy:150,rx:Math.max(2,r*0.75),ry:Math.max(2,r),fill:'rgba(255,255,255,.18)',stroke:'#e8f1ff','stroke-width':2},bsv);
+    txt(bsv,130,150,`${sig(V,3)} L`,'lbl y');
+    txt(bsv,270,40,'2NaN₃ → 2Na + 3N₂','lbl','start');
+    txt(bsv,270,80,`NaN₃：${m} g ÷ 65 = ${sig(m/65,3)} mol`,'lbl sm','start');
+    txt(bsv,270,110,`N₂：${sig(m/65,3)} × 3/2 = ${sig(nN,3)} mol`,'lbl sm','start');
+    txt(bsv,270,140,`V = nRT/P = ${sig(nN,3)} × 0.0821 × ${T} ÷ 1`,'lbl sm','start');
+    txt(bsv,270,170,`  = ${sig(V,3)} L（1 atm、${t}°C）`,'lbl y','start');
+    $('#v3out').innerHTML=`<div class="big">安全氣囊：${m} g NaN₃ → <b class="y">${sig(V,3)} L</b> N₂</div><div>例題 2-3-5：65 g NaN₃ 在 27°C、1 atm 產生 1.5 mol N₂，約 36.9 L。溫度越高，同樣的藥量產生的氣體體積越大（查理定律）。</div>`;
+  }
+  segTabs($('#v3tabs'),'m',m=>{tab=m;$('#v3calc').hidden=m!=='calc';$('#v3bagBox').hidden=m!=='bag';draw();});
+  segTabs($('#v3unk'),'u',u=>{unk=u;draw();});
+  segTabs($('#v3gas'),'g',g=>{const[a,b]=g.split(',');gas=[a,+b];draw();});
+  Object.values(S).forEach(s=>s.oninput=draw);$('#v3m').oninput=draw;$('#v3t').oninput=draw;
+  $$('#v3pre button').forEach(b=>b.onclick=()=>{const v=b.dataset.v.split(',');unk=v[0];
+    $$('#v3unk button').forEach(x=>x.classList.toggle('on',x.dataset.u===unk));
+    ['P','V','n','T'].forEach((k,i)=>{if(k!==unk)S[k].value=v[i+1];});
+    if(v[5]){const gb=$$('#v3gas button').find(x=>x.dataset.g.startsWith(v[5]));if(gb)gb.click();}
+    draw();
+    if(v[5]==='Ar'){$('#v3out').insertAdjacentHTML('beforeend',`<div class="g">例題 2-3-2：1.0 g 該氣體為 ${sig(val.n,3)} mol → M = 1.0 ÷ ${sig(val.n,3)} = ${sig(1/val.n,3)} g/mol，可能是氬（Ar）。</div>`);}});
+  draw();
+})();
+
+/* ================= V4: Dalton ================= */
+(function(){
+  const svg=$('#v4');let tab='mix';
+  const G=[{k:'a',name:'N₂',M:28,col:'#36e0ff'},{k:'b',name:'O₂',M:32,col:'#ff9f43'},{k:'c',name:'He',M:4,col:'#3ee08f'}];
+  const VP=[[10,9.2],[15,12.8],[20,17.5],[25,23.8],[30,31.8],[35,42.2],[40,55.3]];
+  const vp=t=>{for(let i=0;i<VP.length-1;i++){const[a,pa]=VP[i],[b,pb]=VP[i+1];if(t>=a&&t<=b)return pa+(pb-pa)*(t-a)/(b-a);}return t<10?VP[0][1]:VP[VP.length-1][1];};
+  function drawMix(){
+    const n=G.map(g=>+$('#v4'+g.k).value),V=+$('#v4V').value,T=+$('#v4T').value;
+    G.forEach((g,i)=>$('#v4'+g.k+'v').textContent=fx(n[i],2));$('#v4Vv').textContent=fx(V,1);$('#v4Tv').textContent=T;
+    const P=n.map(x=>x*R*T/V),Pt=P.reduce((a,b)=>a+b,0),nt=n.reduce((a,b)=>a+b,0);
+    clear(svg);
+    const side=60+Math.sqrt(Math.min(V,25)/25)*170,bx=125-side/2,by=145-side/2;
+    el('rect',{x:bx,y:by,width:side,height:side,rx:8,fill:'rgba(54,224,255,.05)',stroke:'#9fb6d9','stroke-width':2.5},svg);
+    let seed=11;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+    G.forEach((g,i)=>{for(let j=0;j<Math.round(n[i]*40);j++)el('circle',{cx:bx+6+rnd()*(side-12),cy:by+6+rnd()*(side-12),r:3.4,fill:g.col},svg);});
+    txt(svg,125,by+side+16,`V = ${fx(V,1)} L，T = ${T} K`,'lbl sm');
+    // stacked bar
+    const x0=330,w=70,top=30,H=230,scale=Pt>0?H/Math.max(Pt,1e-9):0;let y=top+H;
+    const maxP=Math.max(Pt,0.0001);
+    el('rect',{x:x0,y:top,width:w,height:H,rx:6,fill:'rgba(120,190,255,.08)',stroke:'rgba(120,190,255,.3)'},svg);
+    G.forEach((g,i)=>{const hh=P[i]/maxP*H;if(hh<0.5)return;y-=hh;el('rect',{x:x0,y,width:w,height:hh,fill:g.col,opacity:.85},svg);
+      if(hh>16)txt(svg,x0+w+10,y+hh/2,`P(${g.name}) = ${sig(P[i],3)} atm`,'lbl sm','start');});
+    txt(svg,x0+w/2,top-12,`P總 = ${sig(Pt,3)} atm`,'lbl y');
+    const Mavg=nt>0?G.reduce((s,g,i)=>s+n[i]/nt*g.M,0):0;
+    $('#v4out').innerHTML=`<div class="big">P總 = ${G.filter((g,i)=>n[i]>0).map(g=>'P('+g.name+')').join(' + ')||'0'} = <b class="y">${sig(Pt,3)} atm</b></div>
+      <div>${G.map((g,i)=>n[i]>0?`<span style="color:${g.col}">${g.name}</span>：X = ${fx(n[i]/nt,3)}，P = X × P總 = ${sig(P[i],3)} atm`:'').filter(Boolean).join('<br>')}</div>
+      <div>總莫耳數 ${fx(nt,2)} mol；平均分子量 = Σ XᵢMᵢ = <b class="c">${nt>0?sig(Mavg,3):'—'}</b></div>`;
+  }
+  function drawWater(){
+    const t=+$('#v4wt').value,Pa=+$('#v4wp').value,pw=vp(t),pg=Pa-pw;
+    $('#v4wtv').textContent=t;$('#v4wpv').textContent=Pa;
+    clear(svg);
+    // trough
+    el('rect',{x:30,y:190,width:250,height:90,rx:6,fill:'rgba(54,160,255,.35)',stroke:'#9fb6d9','stroke-width':2},svg);
+    // inverted cylinder
+    el('rect',{x:110,y:40,width:70,height:200,fill:'rgba(255,255,255,.06)',stroke:'#e8f1ff','stroke-width':2.5},svg);
+    el('rect',{x:111,y:190,width:68,height:50,fill:'rgba(54,160,255,.35)'},svg);
+    let seed=3;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+    for(let i=0;i<34;i++)el('circle',{cx:116+rnd()*58,cy:46+rnd()*140,r:3.2,fill:'#ffd84d'},svg);
+    for(let i=0;i<Math.round(pw/3);i++)el('circle',{cx:116+rnd()*58,cy:46+rnd()*140,r:3.2,fill:'#36e0ff'},svg);
+    el('path',{d:'M20,250 H90 Q100,250 110,235 L130,190',stroke:'#9fb6d9','stroke-width':4,fill:'none'},svg);
+    txt(svg,145,28,'水面等高','lbl sm');el('line',{x1:30,y1:190,x2:280,y2:190,stroke:'#ffd84d','stroke-dasharray':'5 4'},svg);
+    // stacked bar
+    const x0=340,w=70,top=30,H=230;
+    el('rect',{x:x0,y:top+H-pg/Pa*H,width:w,height:pg/Pa*H,fill:'#ffd84d',opacity:.85},svg);
+    el('rect',{x:x0,y:top,width:w,height:pw/Pa*H,fill:'#36e0ff',opacity:.9},svg);
+    txt(svg,x0+w/2,top-12,`P大氣 = ${Pa} mmHg`,'lbl');
+    txt(svg,x0+w+8,top+H/2,`P氣 = ${fx(pg,1)}`,'lbl sm y','start');
+    txt(svg,x0+w+8,top+10,`P水 = ${fx(pw,1)}`,'lbl sm c','start');
+    $('#v4out').innerHTML=`<div class="big">P氣 = P大氣 − P水蒸氣 = ${Pa} − ${fx(pw,1)} = <b class="y">${fx(pg,1)} mmHg</b>（${sig(pg/760,3)} atm）</div>
+      <div>${t}°C 時水的飽和蒸氣壓約 ${fx(pw,1)} mmHg（只與溫度有關，溫度越高越大）。</div>
+      <div class="hint" style="margin:4px 0 0">例題 2-4-3（25°C、760 mmHg）課本取 24 mmHg，得 736 mmHg；此處用較精確的表列值 23.8 mmHg。若瓶內水面較高，還要再扣掉水柱高 ÷ 13.6。</div>`;
+  }
+  const draw=()=>tab==='mix'?drawMix():drawWater();
+  segTabs($('#v4tabs'),'m',m=>{tab=m;$('#v4mixC').hidden=m!=='mix';$('#v4pre').hidden=m!=='mix';$('#v4watC').hidden=m!=='water';draw();});
+  ['a','b','c','V','T','wt','wp'].forEach(k=>$('#v4'+k).oninput=draw);
+  $$('#v4pre button').forEach(b=>b.onclick=()=>{const v=b.dataset.v.split(',');$('#v4V').max=Math.max(10,+v[3]);['a','b','c','V','T'].forEach((k,i)=>$('#v4'+k).value=v[i]);
+    draw();});
+  draw();
+})();
+
+/* ================= Tools panel ================= */
+(function(){
+  const tools=$('#tools'),head=$('#toolsHead');
+  if(innerWidth<760){tools.classList.add('min');$('#toolsMin').textContent='＋';document.body.classList.remove('tools-open');}
+  $$('.tool-tabs button').forEach(b=>b.onclick=()=>{$$('.tool-tabs button').forEach(x=>x.classList.toggle('on',x===b));$$('.tool-pane').forEach(p=>p.classList.toggle('on',p.dataset.p===b.dataset.t));});
+  $('#toolsMin').onclick=e=>{e.stopPropagation();tools.classList.toggle('min');$('#toolsMin').textContent=tools.classList.contains('min')?'＋':'—';document.body.classList.toggle('tools-open',!tools.classList.contains('min')&&!tools.dataset.moved);};
+  head.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=tools.getBoundingClientRect(),ox=e.clientX-r.left,oy=e.clientY-r.top;head.setPointerCapture(e.pointerId);
+    const mv=ev=>{tools.style.transform='none';tools.style.right='auto';tools.style.left=clamp(ev.clientX-ox,0,innerWidth-r.width)+'px';tools.style.top=clamp(ev.clientY-oy,0,innerHeight-40)+'px';
+      if(!tools.dataset.moved){tools.dataset.moved=1;document.body.classList.remove('tools-open');}};
+    const up=()=>{head.removeEventListener('pointermove',mv);head.removeEventListener('pointerup',up);};
+    head.addEventListener('pointermove',mv);head.addEventListener('pointerup',up);});
+
+  /* big overlay */
+  const big=$('#bigShow');let bigMode=null;
+  big.onclick=()=>{big.classList.remove('on','alarm');bigMode=null;};
+  function showBig(text,sub,mode){$('#bigNum').textContent=text;$('#bigSub').textContent=sub;big.classList.add('on');bigMode=mode;}
+
+  /* audio */
+  let ac=null;function beep(times=3){if(!$('#tSound').checked)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();
+    for(let i=0;i<times;i++){const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=880;o.connect(g);g.connect(ac.destination);
+      const t0=ac.currentTime+i*0.45;g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(0.4,t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+0.35);o.start(t0);o.stop(t0+0.4);}}catch(e){}}
+
+  /* lottery */
+  let drawn=[],rolling=false;
+  function pool(){const a=+$('#lotFrom').value,b=+$('#lotTo').value,lo=Math.min(a,b),hi=Math.max(a,b);const arr=[];for(let i=lo;i<=hi;i++)if(!$('#lotNoRep').checked||!drawn.includes(i))arr.push(i);return arr;}
+  function hist(){$('#lotHist').innerHTML=drawn.map(n=>`<span>${n}</span>`).join('');$('#lotInfo').textContent=`已抽 ${drawn.length} 位，剩 ${pool().length} 位可抽`;}
+  $('#lotGo').onclick=()=>{if(rolling)return;const p=pool();if(!p.length){$('#lotNum').textContent='抽完';return;}
+    rolling=true;const num=$('#lotNum');const t0=performance.now();
+    const tick=()=>{num.textContent=p[Math.floor(Math.random()*p.length)];if(performance.now()-t0<1300){setTimeout(tick,60+(performance.now()-t0)/12);}
+      else{const pick=p[Math.floor(Math.random()*p.length)];num.textContent=pick;drawn.push(pick);hist();rolling=false;beep(1);
+        if($('#lotBig').checked)showBig(pick,'抽中座號 · 點任意處關閉','lot');}};
+    tick();};
+  $('#lotReset').onclick=()=>{drawn=[];$('#lotNum').textContent='?';hist();};
+  ['lotFrom','lotTo','lotNoRep'].forEach(id=>$('#'+id).onchange=hist);hist();
+
+  /* timer */
+  let total=180,remain=180000,endAt=0,running=false,iv=null;
+  const disp=$('#tDisp'),startBtn=$('#tStart');
+  const fmt=ms=>{const s=Math.ceil(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');};
+  function render(){disp.textContent=fmt(remain);if(bigMode==='timer')$('#bigNum').textContent=fmt(remain);}
+  function stop(){running=false;clearInterval(iv);startBtn.textContent=remain>0?'▶ 繼續':'▶ 開始';startBtn.classList.remove('stop');}
+  function set(sec){stop();total=Math.max(0,sec);remain=total*1000;disp.classList.remove('alarm');big.classList.remove('alarm');startBtn.textContent='▶ 開始';render();}
+  startBtn.onclick=()=>{if(running){remain=Math.max(0,endAt-Date.now());stop();render();return;}
+    if(remain<=0)remain=total*1000;if(remain<=0)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();ac.resume();}catch(e){}
+    disp.classList.remove('alarm');big.classList.remove('alarm');
+    running=true;endAt=Date.now()+remain;startBtn.textContent='⏸ 暫停';startBtn.classList.add('stop');
+    iv=setInterval(()=>{remain=Math.max(0,endAt-Date.now());render();if(remain<=0){stop();disp.classList.add('alarm');if(bigMode==='timer'){big.classList.add('alarm');$('#bigSub').textContent='時間到！點任意處關閉';}beep(4);}},200);};
+  $('#tReset').onclick=()=>set(total);
+  $$('[data-s]').forEach(b=>b.onclick=()=>set(+b.dataset.s));
+  $$('[data-d]').forEach(b=>b.onclick=()=>{const cur=running?Math.max(0,endAt-Date.now()):remain;const nv=Math.max(0,cur+(+b.dataset.d)*1000);
+    if(running){endAt=Date.now()+nv;remain=nv;}else{remain=nv;total=Math.ceil(nv/1000);}disp.classList.remove('alarm');render();});
+  $('#tBig').onclick=()=>showBig(fmt(remain),running?'計時中 · 點任意處關閉':'點任意處關閉','timer');
+
+  /* pen */
+  const cv=$('#ink'),ctx=cv.getContext('2d');let strokes=[],cur=null,active=false,color='#ff5a5a',mode='pen';
+  const COLORS=['#ff5a5a','#ffd84d','#36e0ff','#3ee08f','#ffffff','#000000'];
+  $('#penColors').innerHTML=COLORS.map((c,i)=>`<button class="sw ${i?'':'on'}" style="background:${c}" data-c="${c}" aria-label="顏色"></button>`).join('');
+  $$('#penColors .sw').forEach(b=>b.onclick=()=>{color=b.dataset.c;$$('#penColors .sw').forEach(x=>x.classList.toggle('on',x===b));if(mode==='er')setMode('pen');});
+  function setMode(m){mode=m;$$('#penModes button').forEach(x=>x.classList.toggle('on',x.dataset.m===m));}
+  $$('#penModes button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+  function size(){const d=devicePixelRatio||1;cv.width=innerWidth*d;cv.height=innerHeight*d;ctx.setTransform(d,0,0,d,0,0);redraw();}
+  function redraw(){ctx.clearRect(0,0,innerWidth,innerHeight);const sx=scrollX,sy=scrollY;
+    for(const s of strokes){if(s.pts.length<1)continue;ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.globalCompositeOperation=s.mode==='er'?'destination-out':'source-over';ctx.globalAlpha=s.mode==='hl'?0.35:1;
+      ctx.strokeStyle=s.color;ctx.lineWidth=s.mode==='hl'?s.size*3:(s.mode==='er'?s.size*4:s.size);
+      ctx.beginPath();ctx.moveTo(s.pts[0][0]-sx,s.pts[0][1]-sy);for(const p of s.pts)ctx.lineTo(p[0]-sx,p[1]-sy);if(s.pts.length===1)ctx.lineTo(s.pts[0][0]-sx+0.1,s.pts[0][1]-sy);ctx.stroke();ctx.restore();}}
+  let raf=0;const sched=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;redraw();});};
+  addEventListener('resize',size);addEventListener('scroll',()=>{if(strokes.length)sched();},{passive:true});
+  cv.addEventListener('pointerdown',e=>{if(!active)return;cv.setPointerCapture(e.pointerId);cur={mode,color,size:+$('#penSize').value,pts:[[e.clientX+scrollX,e.clientY+scrollY]]};strokes.push(cur);sched();});
+  cv.addEventListener('pointermove',e=>{if(!cur)return;cur.pts.push([e.clientX+scrollX,e.clientY+scrollY]);sched();});
+  const end=()=>{cur=null;};cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  cv.addEventListener('wheel',e=>{scrollBy(0,e.deltaY);},{passive:true});
+  function setActive(on){active=on;cv.classList.toggle('active',on);document.body.classList.toggle('inking',on);
+    const b=$('#penToggle');b.textContent=on?'⏹ 結束畫筆':'✏️ 開始畫筆';b.classList.toggle('stop',on);}
+  $('#penToggle').onclick=()=>setActive(!active);
+  $('#penUndo').onclick=()=>{strokes.pop();redraw();};
+  $('#penClear').onclick=()=>{strokes=[];redraw();};
+  addEventListener('keydown',e=>{if(e.key==='Escape'){if(active)setActive(false);lb.classList.remove('on');big.classList.remove('on','alarm');bigMode=null;}
+    if((e.ctrlKey||e.metaKey)&&e.key==='z'&&active){strokes.pop();redraw();e.preventDefault();}});
+  size();
+})();
+
+/* ================= YouTube ================= */
+(function(){
+  const KEY='chem-e1-ch2-youtube';let list=[],cur=-1;
+  try{list=JSON.parse(localStorage.getItem(KEY)||'[]')||[];}catch(e){list=[];}
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(list));}catch(e){}};
+  const msg=(s,ok)=>{const m=$('#ytMsg');m.textContent=s;m.classList.toggle('ok',!!ok);};
+  function parseT(t){if(/^\d+$/.test(t))return +t;const m=String(t).match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);return m?(+(m[1]||0))*3600+(+(m[2]||0))*60+(+(m[3]||0)):0;}
+  function parseYT(raw){const u=raw.trim();if(!u)return null;let id=null,start=0;
+    try{const url=new URL(/^https?:\/\//i.test(u)?u:'https://'+u);const h=url.hostname.toLowerCase().replace(/^(www\.|m\.|music\.)/,'');
+      if(h==='youtu.be')id=url.pathname.split('/')[1];
+      else if(h==='youtube.com'||h==='youtube-nocookie.com'){id=url.searchParams.get('v');
+        if(!id){const m=url.pathname.match(/^\/(?:embed|shorts|live|v)\/([\w-]{11})/);if(m)id=m[1];}}
+      const t=url.searchParams.get('t')||url.searchParams.get('start');if(t)start=parseT(t);
+    }catch(e){}
+    if(!id&&/^[\w-]{11}$/.test(u))id=u;
+    return id&&/^[\w-]{11}$/.test(id)?{id,start}:null;}
+  function play(i){cur=i;const v=list[i];const p=$('#ytPlayer');
+    if(!v){p.innerHTML='<div class="yt-empty">尚未插入影片<br><span>在上方貼上 YouTube 網址後按「插入影片」</span></div>';$('#ytBar').hidden=true;$('#ytFileHint').hidden=true;renderList();return;}
+    p.innerHTML='';const f=document.createElement('iframe');
+    f.src=`https://www.youtube.com/embed/${v.id}?rel=0&playsinline=1${v.start?'&start='+v.start:''}`;
+    f.title=v.title||'YouTube 影片';f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';p.appendChild(f);
+    $('#ytBar').hidden=false;$('#ytNow').textContent=v.title||'YouTube 影片';
+    $('#ytOpen').href=`https://www.youtube.com/watch?v=${v.id}${v.start?'&t='+v.start+'s':''}`;
+    $('#ytFileHint').hidden=location.protocol!=='file:';renderList();}
+  function renderList(){const box=$('#ytList');box.innerHTML='';
+    list.forEach((v,i)=>{const b=document.createElement('div');b.className='yt-item'+(i===cur?' on':'');b.tabIndex=0;b.setAttribute('role','button');
+      const img=document.createElement('img');img.src=`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`;img.alt='';img.loading='lazy';
+      const t=document.createElement('span');t.className='t';t.textContent=(i+1)+'. '+(v.title||'YouTube 影片');
+      const d=document.createElement('button');d.className='yt-del';d.title='移除';d.textContent='✕';
+      d.onclick=e=>{e.stopPropagation();if(!confirm('要從清單移除「'+(v.title||'YouTube 影片')+'」嗎？'))return;list.splice(i,1);save();
+        if(cur===i)play(list.length?0:-1);else{if(cur>i)cur--;renderList();}};
+      b.onclick=()=>play(i);b.onkeydown=e=>{if(e.key==='Enter')play(i);};
+      b.append(img,t,d);box.appendChild(b);});}
+  function add(){const r=parseYT($('#ytUrl').value);
+    if(!r){msg('看不出這是 YouTube 影片網址，請確認後再貼一次（例如 https://youtu.be/xxxxxxxxxxx）。');return;}
+    const title=$('#ytTitle').value.trim()||`影片 ${list.length+1}`;
+    const dup=list.findIndex(v=>v.id===r.id&&v.start===r.start);
+    if(dup>=0){play(dup);msg('這部影片已經在清單裡，已切換過去。',true);}
+    else{list.push({id:r.id,start:r.start,title});save();play(list.length-1);msg('已插入影片！',true);}
+    $('#ytUrl').value='';$('#ytTitle').value='';}
+  $('#ytAdd').onclick=add;
+  ['ytUrl','ytTitle'].forEach(id=>$('#'+id).addEventListener('keydown',e=>{if(e.key==='Enter')add();}));
+  window.__parseYT=parseYT;
+  if(list.length)play(0);else renderList();
+})();
+
+/* nav highlight */
+(function(){const links=$$('nav.top a');const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+en.target.id));});},{rootMargin:'-40% 0px -55% 0px'});
+  $$('.unit').forEach(s=>io.observe(s));})();
+</script>
+</body>
+</html>
