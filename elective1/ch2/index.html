@@ -540,7 +540,7 @@ function buildQuiz(root){
 $$('.quiz').forEach(buildQuiz);
 
 /* ================= shared chem helpers ================= */
-const R=0.08206;
+const R=0.082;
 const fx=(v,d=2)=>{const s=(Math.round(v*10**d)/10**d).toFixed(d);return s.replace('-','−');};
 const sig=(v,s=3)=>{if(!isFinite(v))return '—';if(v===0)return '0';const d=Math.max(0,s-1-Math.floor(Math.log10(Math.abs(v))));return fx(v,Math.min(d,4));};
 function clear(svg){while(svg.firstChild)svg.removeChild(svg.firstChild);}
@@ -672,9 +672,14 @@ function frame(g,x0,y0,w,h,xmax,ymax,xl,yl,xt,yt,xmin=0){
       txt(layerG,500,44,isC?`定壓 ${fx(st.P,2)} atm`:`定容 ${fx(st.V,1)} L`,'lbl sm','end');
     }
     // readout
-    const kv=mode==='boyle'?`PV = ${fx(st.P,2)} × ${fx(st.V,1)} = <b class="y">${fx(st.P*st.V,2)}</b>（定值）`:
-      mode==='charles'?`V/T = ${fx(st.V,2)} ÷ ${Math.round(st.T)} = <b class="y">${fx(st.V/st.T,4)}</b>（定值）`:
-      `P/T = ${fx(st.P,2)} ÷ ${Math.round(st.T)} = <b class="y">${fx(st.P/st.T,5)}</b>（定值）`;
+    /* 算式一律用「畫面上顯示的數字」計算，避免四捨五入後乘起來對不上；定值另以 nRT（或 nR/P、nR/V）列出 */
+    const ps=fx(st.P,mode==='charles'?2:3),vs=fx(st.V,mode==='boyle'?1:2),ts=Math.round(st.T);let kv;
+    if(mode==='boyle'){const pr=(+ps)*(+vs),k=R*ts;
+      kv=`PV = ${ps} × ${vs} = <b class="y">${fx(pr,2)}</b> ${Math.abs(pr-k)<0.005?'=':'≈'} nRT = 1 × 0.082 × ${ts} = ${fx(k,2)}（定值）`;}
+    else if(mode==='charles'){const q=(+vs)/ts,k=R/(+fx(st.P,2));
+      kv=`V/T = ${vs} ÷ ${ts} = <b class="y">${fx(q,4)}</b> ${Math.abs(q-k)<0.00005?'=':'≈'} nR/P = 0.082 ÷ ${fx(st.P,2)} = ${fx(k,4)}（定值）`;}
+    else{const q=(+ps)/ts,k=R/(+fx(st.V,1));
+      kv=`P/T = ${ps} ÷ ${ts} = <b class="y">${fx(q,5)}</b> ${Math.abs(q-k)<0.000005?'=':'≈'} nR/V = 0.082 ÷ ${fx(st.V,1)} = ${fx(k,5)}（定值）`;}
     let cmp='';
     if(ref){
       if(mode==='boyle')cmp=`起點 → 現在：V₂/V₁ = ${fx(st.V/ref.V,3)}，P₂/P₁ = ${fx(st.P/ref.P,3)}（體積變 ${fx(st.V/ref.V,2)} 倍，壓力變 ${fx(st.P/ref.P,2)} 倍）`;
@@ -731,10 +736,11 @@ function frame(g,x0,y0,w,h,xmax,ymax,xl,yl,xt,yt,xmin=0){
       el('rect',{x:x0,y,width:Math.max(4,w*f),height:16,rx:8,fill:k===unk?'#ffd84d':'#36e0ff'},svg);
       txt(svg,x0,y-10,`${k} = ${k==='T'?Math.round(val[k]):sig(val[k],3)} ${U[k]}${k===unk?'  ← 所求':''}${val[k]>R0[k][1]?'（超出刻度）':''}`,'lbl sm','start');});
     const m=val.n*gas[1],d=val.P*gas[1]/(R*val.T);
-    $('#v3out').innerHTML=`<div class="big">PV = nRT：${sig(val.P,3)} × ${sig(val.V,3)} = ${sig(val.n,3)} × 0.0821 × ${Math.round(val.T)}</div>
-      <div>所求 <b class="y">${unk} = ${unk==='T'?Math.round(val[unk])+' K（'+fx(val.T-273,0)+'°C）':sig(val[unk],3)+' '+U[unk]}</b></div>
+    const sP=sig(val.P,3),sV=sig(val.V,3),sn=sig(val.n,3),sT=unk==='T'?sig(val.T,3):Math.round(val.T),Lh=(+sP)*(+sV),Rh=(+sn)*R*sT;
+    $('#v3out').innerHTML=`<div class="big">PV = ${sP} × ${sV} = ${sig(Lh,3)}；nRT = ${sn} × 0.082 × ${sT} = ${sig(Rh,3)}</div>
+      <div>所求 <b class="y">${unk} = ${unk==='T'?sig(val[unk],3)+' K（'+fx(val.T-273,0)+'°C）':sig(val[unk],3)+' '+U[unk]}</b></div>
       <div>${gas[0]}（M = ${gas[1]}）：質量 W = nM = <b class="c">${sig(m,3)} g</b>；密度 d = PM/RT = <b class="c">${sig(d,3)} g/L</b>（${gas[1]>29?'比空氣重':'比空氣輕'}，空氣平均分子量約 29）</div>
-      <div class="hint" style="margin:4px 0 0">R 取 0.08206 atm·L/(mol·K)；課本常用 0.082，結果第三位有效數字可能略有差異。</div>`;
+      <div class="hint" style="margin:4px 0 0">R 取 0.082 atm·L/(mol·K)（與課本相同）；算式兩邊用畫面上的數字計算，四捨五入後末位可能差 1。25°C、1 atm 的莫耳體積用 0.082 算是 24.4 L，用較精確的 0.08206 算是 24.5 L。</div>`;
   }
   function drawBag(){
     const m=+$('#v3m').value,t=+$('#v3t').value,T=t+273;$('#v3mv').textContent=m;$('#v3tv').textContent=t;
@@ -749,7 +755,7 @@ function frame(g,x0,y0,w,h,xmax,ymax,xl,yl,xt,yt,xmin=0){
     txt(bsv,270,40,'2NaN₃ → 2Na + 3N₂','lbl','start');
     txt(bsv,270,80,`NaN₃：${m} g ÷ 65 = ${sig(m/65,3)} mol`,'lbl sm','start');
     txt(bsv,270,110,`N₂：${sig(m/65,3)} × 3/2 = ${sig(nN,3)} mol`,'lbl sm','start');
-    txt(bsv,270,140,`V = nRT/P = ${sig(nN,3)} × 0.0821 × ${T} ÷ 1`,'lbl sm','start');
+    txt(bsv,270,140,`V = nRT/P = ${sig(nN,3)} × 0.082 × ${T} ÷ 1`,'lbl sm','start');
     txt(bsv,270,170,`  = ${sig(V,3)} L（1 atm、${t}°C）`,'lbl y','start');
     $('#v3out').innerHTML=`<div class="big">安全氣囊：${m} g NaN₃ → <b class="y">${sig(V,3)} L</b> N₂</div><div>例題 2-3-5：65 g NaN₃ 在 27°C、1 atm 產生 1.5 mol N₂，約 36.9 L。溫度越高，同樣的藥量產生的氣體體積越大（查理定律）。</div>`;
   }
