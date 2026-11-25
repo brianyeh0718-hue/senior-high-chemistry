@@ -15,7 +15,7 @@ window.SITE = {
       path: 'elective1/',
       chapters: [
         { no: '第二章', title: '氣體', path: 'elective1/ch2/', ready: true,
-          desc: '壓力與壓力計、氣體定律、PV = nRT 與分子動力論、道耳頓分壓定律', cover: 'elective1/ch2/assets/slides/slide01.jpg' }
+          desc: '壓力與壓力計、氣體定律、PV = nRT 與分子動力論、道耳頓分壓定律；含心智圖與 62 張學習卡', cover: 'elective1/ch2/assets/slides/slide01.jpg' }
       ]
     }
   ]
